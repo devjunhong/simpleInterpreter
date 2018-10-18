@@ -8,8 +8,13 @@ Please take look carefully the [reference](https://ruslanspivak.com/lsbasi-part1
 * Python 3.6.5
 
 # How to execute 
+There are 14 parts on the original reference. 
+
+I create folder following the part name. 
+
 ```
-> python  
+> cd Part1
+> python calc1.py
 ```
 
 # Reference 
