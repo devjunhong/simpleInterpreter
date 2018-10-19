@@ -151,7 +151,7 @@ def main():
         try:
             # To run under Python3 replace 'raw_input' call
             # with 'input'
-            text = input('calc> ')
+            text = raw_input('calc> ')
         except EOFError:
             break
         if not text:

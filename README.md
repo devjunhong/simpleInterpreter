@@ -5,7 +5,7 @@ Please take look carefully the [reference](https://ruslanspivak.com/lsbasi-part1
 
 # Environment 
 * Windows 10 
-* Python 3.6.5
+* Python 2.7.14
 
 # How to execute 
 There are 14 parts on the original reference. 
