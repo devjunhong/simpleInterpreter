@@ -16,7 +16,7 @@ class Lexer{
   constructor(text){
     this.text = text; 
     this.pos = 0
-    this.current_char = text[0];
+    this.current_char = text[this.pos];
   }
 
   error(){
@@ -48,12 +48,12 @@ class Lexer{
   }
 
   get_next_token(){
-    if(this.pos > this.text.length - 1){
-      return new Token(EOF, null);
-    }
-
     if(/\s/.test(this.current_char)){
       this.skip_whitespace();
+    }
+
+    if(this.pos > this.text.length - 1){
+      return new Token(EOF, null);
     }
 
     if(/\d/.test(this.current_char)){
@@ -83,28 +83,23 @@ class Interpreter{
   constructor(lexer){
     this.lexer = lexer;
     this.current_token = lexer.get_next_token();
-    this.evaluate = 0;
   }
 
   term(){
-    const left = this.factor();
+    let result = this.factor();
 
-    const op = this.current_token.type; 
-    if(op === MUL){
-      eat(MUL);
-    }else if(op === DIV){
-      eat(MUL);
-    }else{
-      this.lexer.error();
+    while(this.current_token.type === MUL ||
+      this.current_token.type === DIV){
+      if(this.current_token.type === MUL){
+        this.eat(MUL);
+        result = result * this.factor();
+      }else if(this.current_token.type === DIV){
+        this.eat(DIV);
+        result = result / this.factor();
+      }
     }
-    
-    const right = this.factor();
 
-    if(op === MUL){
-      this.evaluate = left * right;
-    }else if(op === DIV){
-      this.evaluate = left / right;
-    }
+    return result;
   }
 
   factor(){
@@ -114,24 +109,20 @@ class Interpreter{
   }
 
   expr(){
-    const left = this.term();
+    let result = this.term(); 
 
-    const op = this.current_token.type; 
-    if(op === PLUS){
-      eat(PLUS);
-    }else if(op === MINUS){
-      eat(MINUS);
-    }else{
-      this.lexer.error();
+    while(this.current_token.type === PLUS ||
+      this.current_token.type === MINUS){
+      if(this.current_token.type === PLUS){
+        this.eat(PLUS);
+        result += this.term();
+      }else if(this.current_token.type === MINUS){
+        this.eat(MINUS);
+        result -= this.term();
+      }
     }
-    
-    const right = this.term();
 
-    if(op === PLUS){
-      this.evaluate = left + right;
-    }else if(op === MINUS){
-      this.evaluate = left - right;
-    }
+    return result;
   }
 
   eat(type){
@@ -143,7 +134,37 @@ class Interpreter{
   }
 }
 
-const lexer = new Lexer("11           +          321      ");
-const interpreter = new Interpreter(lexer); 
-interpreter.expr();
-console.log(interpreter.evaluate);
+// let lexer = new Lexer('1 + 1 * 4');
+// let interpreter = new Interpreter(lexer); 
+// console.log(interpreter.expr());
+
+const readline = require('readline'); 
+const rl = readline.createInterface({
+  input: process.stdin, 
+  output: process.stdout
+});
+
+rl.setPrompt('calc > ');
+rl.prompt(); 
+
+rl.on('line', function(line){
+  let lexer = new Lexer(line); 
+  let interpreter = new Interpreter(lexer); 
+  console.log(interpreter.expr());
+  rl.prompt();
+}).on('close', function(){
+  console.log('bye bye'); 
+  process.exit(0);
+});
+
+// try{
+//   rl.question('calc > ', (answer) => {
+//     let lexer = new Lexer(answer);
+//     let interpreter = new Interpreter(lexer); 
+//     console.log(interpreter.expr());
+//   });  
+// }catch(ex){
+//   console.log(ex);
+// }finally{
+//   rl.close();
+// }
