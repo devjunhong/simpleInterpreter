@@ -134,10 +134,6 @@ class Interpreter{
   }
 }
 
-// let lexer = new Lexer('1 + 1 * 4');
-// let interpreter = new Interpreter(lexer); 
-// console.log(interpreter.expr());
-
 const readline = require('readline'); 
 const rl = readline.createInterface({
   input: process.stdin, 
@@ -156,15 +152,3 @@ rl.on('line', function(line){
   console.log('bye bye'); 
   process.exit(0);
 });
-
-// try{
-//   rl.question('calc > ', (answer) => {
-//     let lexer = new Lexer(answer);
-//     let interpreter = new Interpreter(lexer); 
-//     console.log(interpreter.expr());
-//   });  
-// }catch(ex){
-//   console.log(ex);
-// }finally{
-//   rl.close();
-// }
