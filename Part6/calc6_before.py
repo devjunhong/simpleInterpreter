@@ -6,6 +6,9 @@ INTEGER, PLUS, MINUS, MUL, DIV, EOF = (
     'INTEGER', 'PLUS', 'MINUS', 'MUL', 'DIV', 'EOF'
 )
 
+LPAREN, RPAREN = (
+    'LPAREN', 'RPAREN'
+)
 
 class Token(object):
     def __init__(self, type, value):
@@ -93,6 +96,14 @@ class Lexer(object):
                 self.advance()
                 return Token(DIV, '/')
 
+            if self.current_char == '(':
+                self.advance()
+                return Token(LPAREN, '(')
+
+            if self.current_char == ')':
+                self.advance()
+                return Token(RPAREN, ')')
+
             self.error()
 
         return Token(EOF, None)
@@ -120,8 +131,15 @@ class Interpreter(object):
     def factor(self):
         """factor : INTEGER"""
         token = self.current_token
-        self.eat(INTEGER)
-        return token.value
+
+        if self.current_token.type == INTEGER:
+            self.eat(INTEGER)
+            return token.value
+        elif self.current_token.type == LPAREN:
+            self.eat(LPAREN) 
+            result = self.expr()
+            self.eat(RPAREN)
+            return result
 
     def term(self):
         """term : factor ((MUL | DIV) factor)*"""
