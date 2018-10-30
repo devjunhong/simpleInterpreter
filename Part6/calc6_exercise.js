@@ -29,6 +29,10 @@ class Lexer{
     this.current_char = this.text[this.pos];
   }
 
+  error(){
+    throw new Error('Unexpected token');
+  }
+
   advance(){
     this.pos += 1;
     this.current_char = this.text[this.pos];
@@ -52,6 +56,7 @@ class Lexer{
     let result = ''; 
     while(this.pos < this.text.length && this.check_digit()){
       result += this.current_char;
+      this.advance();
     }
     return Number(result); 
   }
@@ -62,16 +67,50 @@ class Lexer{
     }
 
     if(this.pos > this.text.length - 1){
-      return Token(EOF, null);
+      return new Token(EOF, null);
     }
 
     if(this.check_digit()){
-      return Token(INTEGER, this.integer());
+      return new Token(INTEGER, this.integer());
     }
+
+    if(this.current_char === '+'){
+      this.advance();
+      return new Token(PLUS, '+'); 
+    }
+
+    if(this.current_char === '-'){
+      this.advance();
+      return new Token(MINUS, '-'); 
+    }
+
+    if(this.current_char === '*'){
+      this.advance();
+      return new Token(MUL, '*');
+    }
+
+    if(this.current_char === '/'){
+      this.advance();
+      return new Token(DIV, '/');
+    }
+
+    if(this.current_char === '('){
+      this.advance();
+      return new Token(LPAREN, '('); 
+    }
+
+    if(this.current_char === ')'){
+      this.advance();
+      return new Token(RPAREN, ')'); 
+    }
+
+    this.error();
   }
 }
 
-console.log('hello there'); 
-const input = "11+1";
+const input = " 11+1";
 const lexer = new Lexer(input); 
 console.log(lexer.get_next_token().value); 
+console.log(lexer.get_next_token().value); 
+console.log(lexer.get_next_token().value); 
+// console.log(lexer.get_next_token().value); 
