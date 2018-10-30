@@ -3,3 +3,5 @@
 	* On the same folder, there is a calc5_exercise.js 
 
 * Extend the interpreter to handle arithmetic expressions containing parentheses so that your interpreter could evaluate deeply nested arithmetic expressions like: 7 + 3 * (10 / (12 / (3 + 1) - 1))
+
+	* I have no idea for this, so skip for this time. 
