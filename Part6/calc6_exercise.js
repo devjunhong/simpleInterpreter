@@ -108,9 +108,86 @@ class Lexer{
   }
 }
 
-const input = " 11+1";
+class Interpreter{
+  constructor(lexer){
+    this.lexer = lexer; 
+    this.current_token = this.lexer.get_next_token(); 
+  }
+
+  error(){
+    throw new Error('Unexpected token');
+  }
+
+  factor(){
+    if(this.current_token.type === INTEGER){
+      const val = this.current_token.value;
+      this.eat(INTEGER);
+      return val; 
+    }else if(this.current_token.type === LPAREN){
+      this.eat(LPAREN);
+      const val = this.expr();
+      this.eat(RPAREN);
+      return val;
+    }
+  }
+
+  term(){
+    let result = this.factor(); 
+
+    while(this.current_token.type === MUL ||
+      this.current_token.type === DIV){
+
+      if(this.current_token.type === MUL){
+        this.eat(MUL);
+        result *= this.factor();
+      }else if(this.current_token.type === DIV){
+        this.eat(DIV);
+        result /= this.factor(); 
+      }
+    }
+
+    return result; 
+  }
+
+  expr(){
+    let result = this.term();
+
+    while(this.current_token.type === PLUS || 
+      this.current_token.type === MINUS){
+      if(this.current_token.type === PLUS){
+        this.eat(PLUS);
+        result += this.term();
+      }else if(this.current_token.type === MINUS){
+        this.eat(MINUS);
+        result -= this.term(); 
+      }
+    }
+
+    return result;
+  }
+
+  eat(type){
+    if(this.current_token.type === type){
+      this.current_token = this.lexer.get_next_token();
+    }else{
+      this.error();
+    }
+  }
+}
+
+// const input = "  11 + 1 * 3 + 4 / 2 * 2";
+// Cannot read property 'type' of undefined
+
+const input = "(4 + (2 + 2)) * 2";
 const lexer = new Lexer(input); 
-console.log(lexer.get_next_token().value); 
-console.log(lexer.get_next_token().value); 
-console.log(lexer.get_next_token().value); 
+
+// console.log(lexer.get_next_token().value); 
+// console.log(lexer.get_next_token().value); 
+// console.log(lexer.get_next_token().value); 
+
+const interpreter = new Interpreter(lexer);
+
+console.log(interpreter.current_token);
+console.log(interpreter.lexer);
+console.log(interpreter.expr());
 // console.log(lexer.get_next_token().value); 
