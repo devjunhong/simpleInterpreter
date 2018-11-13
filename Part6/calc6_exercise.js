@@ -178,7 +178,7 @@ class Interpreter{
 // const input = "  11 + 1 * 3 + 4 / 2 * 2";
 // Cannot read property 'type' of undefined
 
-const input = "(4 + (2 + 2)) * 2";
+const input = "7 + (((3 + 2)))";
 const lexer = new Lexer(input); 
 
 // console.log(lexer.get_next_token().value); 
